@@ -1,0 +1,97 @@
+package Calculator;
+
+import java.awt.BorderLayout;
+import java.awt.DisplayMode;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+public class CalculatorUI<displayField> extends JFrame implements ActionListener {
+		private JTextField displayField;
+	    private String currentInput;
+	    private double currentValue;
+	    private String operator;
+
+	    public CalculatorUI() {
+	        currentInput = "";
+	        currentValue = 0;
+	        operator = "";
+
+	        setTitle("Calculator");
+	        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	        setLayout(new BorderLayout());
+
+	        displayField = new JTextField();
+	        displayField.setEditable(false);
+	        displayField.setHorizontalAlignment(JTextField.RIGHT);
+	        add(displayField, BorderLayout.NORTH);
+
+	        JPanel buttonPanel = new JPanel();
+	        buttonPanel.setLayout(new GridLayout(4 ,4 , 10, 10));
+
+	        String[] buttons = {
+	            "7", "8", "9", "/",
+	            "4", "5", "6", "*",
+	            "1", "2", "3", "-",
+	            "0", ".", "=", "+"
+	        };
+
+	        for (String buttonLabel : buttons) {
+	            JButton button = new JButton(buttonLabel);
+	            button.addActionListener(this);
+	            buttonPanel.add(button);
+	        }
+
+	        add(buttonPanel, BorderLayout.CENTER);
+
+	        pack();
+	        setLocationRelativeTo(null);
+	    }
+
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+	        String command = e.getActionCommand();
+
+	        if ("0123456789.".contains(command)) {
+	            currentInput += command;
+	            displayField.setText(currentInput);
+	        } else if ("+-*/".contains(command)) {
+	            currentValue = Double.parseDouble(currentInput);
+	            currentInput = "";
+	            operator = command;
+	        } else if ("=".equals(command)) {
+	            double result;
+	            switch (operator) {
+	                case "+":
+	                    result = currentValue + Double.parseDouble(currentInput);
+	                    break;
+	                case "-":
+	                    result = currentValue - Double.parseDouble(currentInput);
+	                    break;
+	                case "*":
+	                    result = currentValue * Double.parseDouble(currentInput);
+	                    break;
+	                case "/":
+	                    result = currentValue / Double.parseDouble(currentInput);
+	                    break;
+	                default:
+	                    result = Double.parseDouble(currentInput);
+	            }
+	            currentInput = String.valueOf(result);
+	            displayField.setText(currentInput);
+	        }
+	    }
+
+	    public static void main(String[] args) {
+	        SwingUtilities.invokeLater(() -> {
+	            CalculatorUI calculator = new CalculatorUI();
+	            calculator.setVisible(true);
+	        });
+	    }
+	}
